@@ -4,7 +4,7 @@
     "description": "ok",
     "main": "index.js",
     "scripts": {
-        "start": "yarn start:dev",
+        "start": "npm run start:dev",
         "start:dev": "tsnd --transpile-only --respawn --ignore-watch node_modules src/index.ts",
         "start:prod": "node dist/index.js",
         "build": "rimraf ./dist && tsc",
@@ -31,10 +31,13 @@
         "typescript": "^3.9.7"
     },
     "dependencies": {
+        "@types/mongoose": "^5.7.34",
         "dotenv": "^8.2.0",
         "express": "^4.17.1",
         "jest": "^26.2.2",
-        "morgan": "^1.10.0"
+        "mongoose": "^5.9.27",
+        "morgan": "^1.10.0",
+        "uuidv4": "^6.2.1"
     },
     "jest": {
         "preset": "ts-jest",
