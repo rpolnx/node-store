@@ -47,25 +47,52 @@ describe('Products Service', () => {
         beforeEach(() => {
             mockReset(repository)
         })
-    
+
         it('When find single products, then return it', async () => {
             const expectedProd: Product = generateProduct('Item 1')
-    
+
             repository.getById.calledWith(anyString()).mockReturnValue(wrapper<Product>(expectedProd))
-    
+
             const actual = await service.getById(v4())
             expect(actual).toBe(expectedProd)
         })
-    
+
         it('When product not found, throw not found exception', async () => {
             repository.getById.calledWith(anyString()).mockReturnValue(null)
-    
+
             await expect(async () => {
                 await service.getById(v4())
             }).rejects.toThrow(NotFound)
         })
     })
-    
+
+    describe('Create product', () => {
+        beforeEach(() => {
+            mockReset(repository)
+        })
+
+        it('When creating a product, returns the id', async () => {
+            const initialProd: Product = generateProduct('Item 1')
+            const expectedProd: Product = new Product({ ...initialProd })
+            expectedProd.id = v4()
+
+            repository.create.calledWith(initialProd).mockReturnValue(wrapper<Product>(expectedProd))
+
+            const actual: SimpleId = await service.create(initialProd)
+            const expected: SimpleId = new SimpleId(expectedProd.id)
+            expect(actual).toEqual(expected)
+        })
+
+        it('When creating product get null object, throw exception', async () => {
+            const initialProd: Product = generateProduct('Item 1')
+
+            repository.create.calledWith(initialProd).mockReturnValue(null)
+
+            await expect(async () => {
+                await service.getById(v4())
+            }).rejects.toThrow(Error)
+        })
+    })
 })
 
 const generateProduct = (name: string) => {
