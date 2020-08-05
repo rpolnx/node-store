@@ -7,7 +7,7 @@ export interface IPaginateRepository<T> {
 
     create(object: T): Promise<T>
 
-    update(id: string, object: T): Promise<T>
+    update(id: string, object: T): Promise<boolean>
 
     delete(id: string): Promise<void>
 }

@@ -1,4 +1,4 @@
-import express from 'express'
+import express, { Request, Response, ErrorRequestHandler, NextFunction } from 'express'
 
 const morgan = require('morgan')
 
@@ -11,10 +11,9 @@ app.use(express.json())
 app.use(morgan('short'))
 app.use(router)
 
-// app.use((err, req, res, next) => {
-//     // Do logging and user-friendly error message display
-//     console.log('Route does not exist')
-//     res.status(500).send({status:500, message: 'internal error',type:'internal'}); 
-//  })
+app.use(async (err: any, req: Request, res: Response, next: NextFunction) => {
+    await res.status(err.status || 500)
+    res.status(500).json({ status: 500, message: 'internal error', type: 'internal' })
+})
 
 export { app }

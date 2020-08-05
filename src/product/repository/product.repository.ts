@@ -38,10 +38,10 @@ export class ProductRepository implements IPaginateRepository<Product> {
         return { ...resp, id: resp._id.toString() }
     }
 
-    async update(id: string, product: Product): Promise<Product> {
-        const created = await productSchema.updateOne({ _id: id }, { ...product, _id: product.id })
-        const resp = created.toObject()
-        return { ...resp, id: resp._id.toString() }
+    async update(id: string, product: Product): Promise<boolean> {
+        const updated = await productSchema.updateOne({ _id: id }, { ...product, _id: id })
+        
+        return updated.n > 0
     }
 
     async delete(id: string): Promise<void> {

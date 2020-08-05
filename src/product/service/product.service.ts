@@ -40,16 +40,18 @@ export class ProductService implements IProductService {
             return new SimpleId(product.id)
         } catch (e) {
             console.log(`Error creating product: ${e}`)
-            throw new Error('Method not implemented.')
         }
     }
 
     async update(id: string, object: Product): Promise<void> {
         try {
-            await this.repository.update(id, object)
+            const updated = await this.repository.update(id, object)
+            if(!updated) {
+                throw new Error('Product not found')
+            }
+            
         } catch (e) {
             console.log(`Error updating product: ${e}`)
-            throw new Error('Method not implemented.')
         }
     }
 
@@ -58,7 +60,6 @@ export class ProductService implements IProductService {
             await this.repository.delete(id)
         } catch (e) {
             console.log(`Error deleting product: ${e}`)
-            throw new Error('Method not implemented.')
         }
     }
 }
