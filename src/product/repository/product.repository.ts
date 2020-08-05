@@ -1,7 +1,6 @@
 import { IPaginateRepository } from '../../common/repository.interface'
 import { Product } from '../dto/product'
-import { productSchema, ProductSchema } from '../schema/product.entity'
-import ValidationError, { model } from 'mongoose'
+import { productSchema } from '../schema/product.entity'
 
 export class ProductRepository implements IPaginateRepository<Product> {
     private limitPerPage: number = 10
@@ -13,10 +12,8 @@ export class ProductRepository implements IPaginateRepository<Product> {
             .limit(this.limitPerPage)
 
         const products: Product[] = modelList
-            .map((it) => it.toObject())
-            .map((resp) => {
-                return new Product({ ...resp }, resp._id)
-            })
+        .map((it) => it.toObject())
+        .map(this.adaptToProduct)
 
         return products
     }
@@ -24,12 +21,12 @@ export class ProductRepository implements IPaginateRepository<Product> {
     async getById(id: string): Promise<Product> {
         const product = await productSchema.findOne({ _id: id })
 
-        if(!product) {
-              return null;  
+        if (!product) {
+            return null
         }
 
         const resp = product.toObject()
-        return { ...resp, id: resp._id }
+        return this.adaptToProduct(resp)
     }
 
     async create(product: Product): Promise<Product> {
@@ -40,11 +37,17 @@ export class ProductRepository implements IPaginateRepository<Product> {
 
     async update(id: string, product: Product): Promise<boolean> {
         const updated = await productSchema.updateOne({ _id: id }, { ...product, _id: id })
-        
+
         return updated.n > 0
     }
 
     async delete(id: string): Promise<void> {
         await productSchema.deleteOne({ _id: id })
+    }
+
+    adaptToProduct(response: any): Product {
+        const id: string = response._id
+        delete response._id
+        return new Product({ ...response, id }, id)
     }
 }
