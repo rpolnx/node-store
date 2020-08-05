@@ -9,6 +9,7 @@
         "noImplicitAny": true,
         "incremental": true,
         "forceConsistentCasingInFileNames": true,
+        "resolveJsonModule": true,
         "outDir": "dist",
         "baseUrl": "./"
     },
