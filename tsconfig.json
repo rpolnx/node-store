@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "esModuleInterop": true,
+        "allowJs": true,
+        "target": "es2017",
+        "removeComments": true,
+        "skipLibCheck": true,
+        "noImplicitAny": true,
+        "incremental": true,
+        "forceConsistentCasingInFileNames": true,
+        "outDir": "dist",
+        "baseUrl": "./"
+    },
+    "include": ["src/**/*.ts"]
+}
