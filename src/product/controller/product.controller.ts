@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import { Product } from '../dto/product'
 import { IProductService } from '../service/product.service.interface'
 import { SimpleId } from '../../common/simpleId.common'
+import { validateOrReject } from 'class-validator'
 
 export class ProductController {
     constructor(private productService: IProductService) {}
@@ -16,6 +17,8 @@ export class ProductController {
 
     async get(req: Request, res: Response): Promise<Response<Product>> {
         const id: string = req.params.id
+
+        await validateOrReject(new SimpleId(id))
         const product: Product = await this.productService.getById(id)
 
         return res.status(200).json(product)
@@ -23,6 +26,8 @@ export class ProductController {
 
     async create(req: Request, res: Response): Promise<Response<SimpleId>> {
         const product: Product = new Product(req.body)
+        await validateOrReject(product)
+
         const created: SimpleId = await this.productService.create(product)
 
         return res.status(201).json(created)
@@ -31,6 +36,10 @@ export class ProductController {
     async update(req: Request, res: Response): Promise<Response<SimpleId>> {
         const id: string = req.params.id
         const product: Product = req.body
+
+        await validateOrReject(new SimpleId(id))
+        await validateOrReject(product)
+
         await this.productService.update(id, product)
 
         return res.status(204).json()
@@ -38,6 +47,8 @@ export class ProductController {
 
     async delete(req: Request, res: Response): Promise<Response<Product>> {
         const id: string = req.params.id
+        await validateOrReject(new SimpleId(id))
+
         await this.productService.delete(id)
 
         return res.status(204).json()

@@ -11,6 +11,8 @@
         "forceConsistentCasingInFileNames": true,
         "resolveJsonModule": true,
         "outDir": "dist",
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
         "baseUrl": "./"
     },
     "include": ["src/**/*.ts"]
