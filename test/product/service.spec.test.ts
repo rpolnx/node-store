@@ -93,6 +93,52 @@ describe('Products Service', () => {
             }).rejects.toThrow(Error)
         })
     })
+
+    describe('Updating product', () => {
+        beforeEach(() => {
+            mockReset(repository)
+        })
+
+        it('When updating an existing product, then return success', async () => {
+            const id = v4()
+            const initialProd: Product = generateProduct('Item 1')
+
+            repository.update.calledWith(id, initialProd).mockReturnValue(wrapper<boolean>(true))
+
+            await service.update(id, initialProd)
+
+            expect(repository.update).toBeCalledWith(id, initialProd)
+        })
+
+        it('When updating a product that does not exists, then throw not found exception', async () => {
+            const id = v4()
+            const initialProd: Product = generateProduct('Item 1')
+
+            repository.update.calledWith(id, initialProd).mockReturnValue(wrapper<boolean>(false))
+
+            await expect(async () => {
+                await service.update(id, initialProd)
+            }).rejects.toThrow(NotFound)
+
+            expect(repository.update).toBeCalledWith(id, initialProd)
+        })
+    })
+
+    describe('Deleting product', () => {
+        beforeEach(() => {
+            mockReset(repository)
+        })
+
+        it('When deleting a product and it get success, return success for idempotent even if not was deleted', async () => {
+            const id = v4()
+
+            repository.delete.calledWith(id).mockReturnThis()
+
+            await service.delete(id)
+
+            expect(repository.delete).toBeCalledWith(id)
+        })
+    })
 })
 
 const generateProduct = (name: string) => {
