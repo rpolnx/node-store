@@ -42,6 +42,30 @@ describe('Products Service', () => {
             expect(actual).toBe(empty)
         })
     })
+
+    describe('Get unique product', () => {
+        beforeEach(() => {
+            mockReset(repository)
+        })
+    
+        it('When find single products, then return it', async () => {
+            const expectedProd: Product = generateProduct('Item 1')
+    
+            repository.getById.calledWith(anyString()).mockReturnValue(wrapper<Product>(expectedProd))
+    
+            const actual = await service.getById(v4())
+            expect(actual).toBe(expectedProd)
+        })
+    
+        it('When product not found, throw not found exception', async () => {
+            repository.getById.calledWith(anyString()).mockReturnValue(null)
+    
+            await expect(async () => {
+                await service.getById(v4())
+            }).rejects.toThrow(NotFound)
+        })
+    })
+    
 })
 
 const generateProduct = (name: string) => {
