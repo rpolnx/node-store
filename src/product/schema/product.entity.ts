@@ -8,6 +8,7 @@ const ProductSchema: Schema = new Schema(
         price: { type: Number, required: true },
         category: { type: String, required: true },
         remainingUnits: { type: Number, required: true },
+        created: { type: Date },
     },
     { versionKey: false }
 )
