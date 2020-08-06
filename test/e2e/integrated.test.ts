@@ -246,6 +246,20 @@ describe('Unexpected errors', () => {
 
             end()
         })
+
+        it('When deleting with wrong id pattern, then return response 400 with bad request message', async (end) => {
+            const id: string = "error-pattern"
+
+            const response = await request
+                .delete(`/products/${id}`)
+                .send(id)
+                .set('Accept', 'application/json')
+                .expect(400)
+
+            expect(response.body.message[0].constraints.matches).not.toBeNull()
+
+            end()
+        })
     })
 
     describe('GET /not-found', () => {
