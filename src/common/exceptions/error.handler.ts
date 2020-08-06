@@ -17,7 +17,7 @@ class NotFound extends ErrorHandler {
     }
 }
 
-const globalErrorHandler = (err: any, _: Request, res: Response) => {
+const globalErrorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
     if (err instanceof ErrorHandler) {
         return res.status(err.statusCode).json({ status: err.statusCode, message: err.message, type: 'treated' })
     }
