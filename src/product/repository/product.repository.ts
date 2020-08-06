@@ -3,7 +3,7 @@ import { Product } from '../dto/product'
 import { productSchema } from '../schema/product.entity'
 
 export class ProductRepository implements IPaginateRepository<Product> {
-    private limitPerPage: number = 10
+    private limitPerPage: number = Number(process.env.NUMBER_PER_PAGE) || 10
 
     async getAll(page: number): Promise<Product[]> {
         const modelList = await productSchema
