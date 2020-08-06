@@ -38,6 +38,7 @@
         "express": "^4.17.1",
         "jest": "^26.2.2",
         "jest-mock-extended": "^1.0.9",
+        "jsonwebtoken": "^8.5.1",
         "mongoose": "^5.9.27",
         "morgan": "^1.10.0",
         "supertest": "^4.0.2",
