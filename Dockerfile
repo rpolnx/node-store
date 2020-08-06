@@ -20,6 +20,6 @@ WORKDIR /home/src/app
 COPY --from=builder /home/prod_modules ./node_modules
 COPY --from=builder /usr/src/builder/dist ./dist
 COPY package.json .
-COPY default.env .
+COPY prod.env .env
 
 CMD ["npm", "run", "start:prod"]
