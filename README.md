@@ -127,4 +127,14 @@ Entre as camadas foi aplicado o princípio de inversão de dependência, podendo
 # Infraestrutura rodando
 
 -   Através de docker-compose e variaveis de ambiente .env
--   Rodando na url:
+-   Proxy reverso com nginx para chegar na aplicação
+-   Rodando na url: https://backend.rpolnx.xyz
+
+-   Token para testar no ambiente
+
+```json
+{
+    "user": "1414373c-8e38-4902-bb50-47fadce23772",
+    "password": "92213350-2f49-43a7-b31d-206a4d76ccb9"
+}
+```
