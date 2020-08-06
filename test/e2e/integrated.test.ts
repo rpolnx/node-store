@@ -105,7 +105,7 @@ describe('Products integrated test', () => {
             mockReset(mockedRepository)
         })
 
-        it('When post /products, then create and return product id', async (end) => {
+        it('When post /products, then create and return product id with status code 201', async (end) => {
             const expectedProd: any = generateProduct('Test')
             const id: string = v4()
             const created: Product = new Product({ ...expectedProd, id }, id)
@@ -120,7 +120,6 @@ describe('Products integrated test', () => {
                 .expect('Content-Type', /json/)
 
             const it: SimpleId = response.body
-
 
             expect(it).toEqual(new SimpleId(id))
 
@@ -142,6 +141,45 @@ describe('Products integrated test', () => {
                 .expect('Content-Type', /json/)
 
             expect(response.body.message).toEqual('Error creating product')
+
+            end()
+        })
+    })
+
+    describe('PUT /products', () => {
+        beforeEach(() => {
+            mockReset(mockedRepository)
+        })
+
+        it('When updating an existing product, then update return status code 204', async (end) => {
+            const initialProduct: any = generateProduct('Test')
+            const id: string = v4()
+
+            mockedRepository.update.calledWith(id, anyObject(initialProduct)).mockReturnValue(wrapper<boolean>(true))
+
+            await request.put(`/products/${id}`).send(initialProduct).set('Accept', 'application/json').expect(204)
+
+            const expected: Product = new Product({ ...initialProduct }, id)
+
+            expect(mockedRepository.update).toBeCalledWith(id, anyObject(expected))
+
+            end()
+        })
+
+        it('When updating a non existing product, then return status code 404 - not found product', async (end) => {
+            const initialProduct: any = generateProduct('Test')
+            const id: string = v4()
+
+            mockedRepository.update.calledWith(id, anyObject(initialProduct)).mockReturnValue(wrapper<boolean>(false))
+
+            const response = await request
+                .put(`/products/${id}`)
+                .send(initialProduct)
+                .set('Accept', 'application/json')
+                .expect(404)
+                .expect('Content-Type', /json/)
+
+            expect(response.body.message).toEqual('Product not found')
 
             end()
         })
