@@ -1,9 +1,10 @@
 import { generateApp, mockedRepository } from './config.integrated'
 import { Product } from '../../src/product/dto/product'
-import { mockReset } from 'jest-mock-extended'
+import { mockReset, anyObject } from 'jest-mock-extended'
 import { generateProduct, wrapper } from '../product/mock.utils'
 
 import { v4 } from 'uuid'
+import { SimpleId } from '../../src/common/simpleId.common'
 
 const app = generateApp()
 
@@ -94,6 +95,53 @@ describe('Products integrated test', () => {
 
             expect(response.body.message).toEqual('Product not found')
             expect(mockedRepository.getById).toBeCalledWith(id)
+
+            end()
+        })
+    })
+
+    describe('POST /products', () => {
+        beforeEach(() => {
+            mockReset(mockedRepository)
+        })
+
+        it('When post /products, then create and return product id', async (end) => {
+            const expectedProd: any = generateProduct('Test')
+            const id: string = v4()
+            const created: Product = new Product({ ...expectedProd, id }, id)
+
+            mockedRepository.create.calledWith(anyObject(expectedProd)).mockReturnValue(wrapper<Product>(created))
+
+            const response = await request
+                .post(`/products`)
+                .send(expectedProd)
+                .set('Content-Type', 'application/json')
+                .expect(201)
+                .expect('Content-Type', /json/)
+
+            const it: SimpleId = response.body
+
+
+            expect(it).toEqual(new SimpleId(id))
+
+            end()
+        })
+
+        it('When repository return invalid creation, then throw error with status 500', async (end) => {
+            const expectedProd: any = generateProduct('Test')
+            const id: string = v4()
+            const created: Product = new Product({ ...expectedProd, id }, id)
+
+            mockedRepository.create.calledWith(expectedProd).mockReturnValue(wrapper<Product>(null))
+
+            const response = await request
+                .post(`/products`)
+                .send(expectedProd)
+                .set('Content-Type', 'application/json')
+                .expect(500)
+                .expect('Content-Type', /json/)
+
+            expect(response.body.message).toEqual('Error creating product')
 
             end()
         })
