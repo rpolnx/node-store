@@ -184,4 +184,22 @@ describe('Products integrated test', () => {
             end()
         })
     })
+
+    describe('DELETE /products/{id}', () => {
+        beforeEach(() => {
+            mockReset(mockedRepository)
+        })
+
+        it("When deleting a product, then return 204 even if it doesn't exists for idempotent key", async (end) => {
+            const id: string = v4()
+
+            mockedRepository.delete.calledWith(id).mockReturnThis()
+
+            await request.delete(`/products/${id}`).send(id).set('Accept', 'application/json').expect(204)
+
+            expect(mockedRepository.delete).toBeCalledWith(id)
+
+            end()
+        })
+    })
 })
