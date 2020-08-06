@@ -1,5 +1,5 @@
 import { IsDate, IsInt, IsNotEmpty, IsNumber, Matches } from 'class-validator'
-const v4 = require('uuidv4')
+import { v4 } from 'uuid'
 
 export class Product {
     @Matches(/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}/)
@@ -27,7 +27,7 @@ export class Product {
         Object.assign(this, props)
 
         if (!id) {
-            this.id = v4.uuid()
+            this.id = v4()
             this.created = new Date()
         }
     }
