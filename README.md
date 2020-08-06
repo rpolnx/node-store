@@ -2,7 +2,9 @@
 
 ## Introdução
 
-    Esse projeto faz parte de um desafio de uma aplicação de microsservicos para fazer um CRUD de uma loja genérica. Algumas das regras são sua construção em nodejs, CRUD, persistência em banco nosql - com busca paginada, autenticação e boas práticas de código
+```
+Esse projeto faz parte de um desafio de uma aplicação de microsservicos para fazer um CRUD de uma loja genérica. Algumas das regras são sua construção em nodejs, CRUD, persistência em banco nosql - com busca paginada, autenticação e boas práticas de código
+```
 
 ## Tecnologias
 
@@ -78,7 +80,9 @@ $ docker-compose -f docker-compose-prod.yml up
 
 ## Boas práticas na arquitetura
 
-    Entre as camadas foi aplicado o princípio de inversão de dependência, podendo receber por injeção quem fizer a implementação das interfaces. Esse modelo fui muito útil principalmente para realizar testes unitários mockando camadas inferiores.
+```
+Entre as camadas foi aplicado o princípio de inversão de dependência, podendo receber por injeção quem fizer a implementação das interfaces. Esse modelo fui muito útil principalmente para realizar testes unitários mockando camadas inferiores.
+```
 
 ## Camadas da aplicação
 
@@ -123,4 +127,4 @@ $ docker-compose -f docker-compose-prod.yml up
 # Infraestrutura rodando
 
 -   Através de docker-compose e variaveis de ambiente .env
--   Rodando na url: 
+-   Rodando na url:
