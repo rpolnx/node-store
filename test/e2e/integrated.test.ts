@@ -203,3 +203,60 @@ describe('Products integrated test', () => {
         })
     })
 })
+
+describe('Unexpected errors', () => {
+    describe('DELETE /products/{id}', () => {
+        beforeEach(() => {
+            mockReset(mockedRepository)
+        })
+
+        it('When deleting a product and got an unexpected error, then application should return 500 with treated error and message', async (end) => {
+            const id: string = v4()
+
+            mockedRepository.delete.calledWith(id).mockImplementation(() => {
+                throw new Error('Unexpected error')
+            })
+
+            const response = await request
+                .delete(`/products/${id}`)
+                .send(id)
+                .set('Accept', 'application/json')
+                .expect(500)
+
+            expect(mockedRepository.delete).toBeCalledWith(id)
+            expect(response.body.message).toBe('Unexpected error')
+
+            end()
+        })
+
+        it('When got an non instance of error, then return response 500 with generic error', async (end) => {
+            const id: string = v4()
+
+            mockedRepository.delete.calledWith(id).mockImplementation(() => {
+                throw 'not an instance of Error'
+            })
+            const response = await request
+                .delete(`/products/${id}`)
+                .send(id)
+                .set('Accept', 'application/json')
+                .expect(500)
+
+            expect(mockedRepository.delete).toBeCalledWith(id)
+            expect(response.body.generic).toBe('not an instance of Error')
+
+            end()
+        })
+    })
+
+    describe('GET /not-found', () => {
+        beforeEach(() => {
+            mockReset(mockedRepository)
+        })
+
+        it("When reaching a route that doesn't exists", async (end) => {
+            const response = await request.get(`/not-found`).set('Accept', 'application/json').expect(404)
+            
+            end()
+        })
+    })
+})
