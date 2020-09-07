@@ -9,7 +9,8 @@ services:
             - MONGO_INITDB_ROOT_USERNAME=${MONGO_DB_ROOT_USER}
             - MONGO_INITDB_ROOT_PASSWORD=${MONGO_DB_ROOT_PASSWORD}
     application:
-        image: rpolnx/node-store:${APP_VERSION}
+        build:
+          context: .
         restart: always
         ports:
             - 8080:8080
@@ -18,3 +19,4 @@ services:
         environment:
             - MONGO_INITDB_ROOT_USERNAME=${MONGO_DB_ROOT_USER}      #override if needed
             - MONGO_INITDB_ROOT_PASSWORD=${MONGO_DB_ROOT_PASSWORD}  #override if needed
+

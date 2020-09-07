@@ -1,11 +1,15 @@
+import { NotFound } from '../../common/exceptions/error.handler'
 import { IPaginateRepository } from '../../common/repository.interface'
+import { SimpleId } from '../../common/simpleId.common'
 import { Product } from '../dto/product'
 import { IProductService } from './product.service.interface'
-import { SimpleId } from '../../common/simpleId.common'
-import { NotFound, ErrorHandler } from '../../common/exceptions/error.handler'
 
 export class ProductService implements IProductService {
     constructor(private repository: IPaginateRepository<Product>) {}
+
+    setRepository(repository: IPaginateRepository<Product>): void {
+        this.repository = repository
+    }
 
     async getAllPaginated(page: number): Promise<Product[]> {
         return await this.repository.getAll(page)
