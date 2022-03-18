@@ -1,103 +1,99 @@
-# node-store
+# Node Store Application (Challenge)
 
-## Introdução
+## Introduction
+    This project was a challenge to build a CRUD from a generic store using microservice pattern. Some of the rules are to build it in nodejs (typescript without a framework like nestjs, adonis etc), to make the persistance layer using NOSQL - using pagination, authentication and following good's code practice.
 
-```txt
-Esse projeto faz parte de um desafio de uma aplicação de microsservicos para fazer um CRUD de uma loja 
-genérica. Algumas das regras são sua construção em nodejs, CRUD, persistência em banco nosql - com 
-busca paginada, autenticação e boas práticas de código.
-```
 
-## Tecnologias
-
--   Node v12.18.3 com typescript
+# Tech Stack Chosen
+-   Node v12.18.3 using typescript
 -   Mongodb
 -   Express
--   Testes unitários e integrados com jest, jest-mock-extended e supertest
--   Mongoose para conexão com banco mongo
--   Autenticação JWT utilizando middlewares do express e o jsonwebtoken
+-   End-to-end tests and unit tests with jest, jest-mock-extended e supertest
+-   Mongoose as an ORM to communicate with mongo database
+-   Basic JWT Authentication using express's middlewares and jsonwebtoken
 -   Docker e Docker-compose
 
 # Setup
+- Node v12+
+- Docker
 
-Requer uma versão do node instalado, preferencialmente node v12+
-
-Instalar as dependencias, subir o ambiente e testar.
-
-### Instalar dependências
+### Dependencies
 
 ```bash
-$ npm install
+$ yarn install
 ```
 
-### Subir o docker-compose com mongo
+### Docker-compose infrastructure stack
 
 ```bash
 $ docker-compose up
 ```
 
-### Rodar testes e/ou com cobertura
+### Run tests and verify cover
 
 ```bash
-$ npm run test
-$ npm run test:coverage
+$ yarn test
+$ yarn run test:coverage
 ```
 
-### Compilar e rodar local no modo de produção
+### Compile and run on production mode
 
 ```bash
-$ npm run build | npm run start:prod
+$ yarn build
+$ yarn start:prod
 ```
 
-### Gerar imagem e rodar no ambiente integrado
+### Generate image and run on compose stack directly
 
-`Observação: renomear o nome da imagem no docker-compose-prod.yml e a versão no .env`
+`Obs: remember to rename image's name on docker-compose-prod.yml and it's version on .env`
 
 ```bash
-$ docker build -t rpolnx/nome_da_imagem:versao .
+$ USER=rpolnx
+$ IMAGE=node-store
+$ VERSION=1.0.0
+$ docker build -t $USER/$IMAGE:$VERSION .
 $ docker-compose -f docker-compose-prod.yml up
 ```
 
-# Estrutura de pastas e Arquitetura
+# Structure and project architecture
 
-## Nível principal:
+## Top level structure:
 
--   `src` - contendo arquivos referentes ao projeto
--   `test` - contendo arquivos do escopo de teste
--   `dist` - pasta de output de compilação
+-   `src` - code from project
+-   `test` - tests from project
+-   `dist` - build output
 
-## Estrutura interna:
+## Module structure:
 
-`common` - contendo classes utilizadas por toda aplicação como exceções e interfaces genéricas
+`common` - reusable code and common things along the project
 
-`config` - arquivos de configurações gerais da aplicação
+`config` - general configuration
 
-`products` - módulo de produtos
+`products` - product's module
 
-`routes` - todas as rotas da aplicação
+`routes` - routes from application
 
----- `app.ts` - configurações de middlewares e coisas do express
+---- `app.ts` - middlewares and server handler
 
----- `index.ts` - boostrap da aplicação
+---- `index.ts` - application boostrap
 
-## Boas práticas na arquitetura
+## Good practices
 
 ```
-Entre as camadas foi aplicado o princípio de inversão de dependência, podendo receber por injeção quem fizer
-a implementação das interfaces. Esse modelo fui muito útil principalmente para realizar testes unitários 
-mockando camadas inferiores.
+Project layers was built applying Dependency Inversion principle, working with the interface and not the concrete interface itself.
+This model follow's SOLID good practices and was very helpful to mock lower layers on tests.
 ```
 
-## Camadas da aplicação
+## Application layer
 
--   `routes` - recebe a requisição e envia para o controller
--   `controller` - processa lógicas de validações mais simples
--   `service` - realiza as principais regras de negócio da aplicação
--   `repository` - adapta a estrutura de comunicação com o banco de dados
+-   `routes` - handle's routes to controllers
+-   `controller` - handles communication between data in/out and do some basic validations
+-   `service` - business layer
+-   `repository` - create an abstraction to communicate with database without expose his complexity to service's layer
 
-# Rotas
+# Routes
 
-## Autenticação
+## Authentication
 
 -   `POST /authenticate`
 
@@ -108,37 +104,42 @@ mockando camadas inferiores.
 }
 ```
 
-`Configurar no .env da aplicação para retornar o token de acesso às rotas`
+```
+Obs: remember to configure on application props '.env' this values: 
+- JWT_SECRET
+- ADMIN_APPLICATION_USERNAME
+- ADMIN_APPLICATION_PASSWORD
+```
 
-## CRUD de produtos requerendo autenticação
+## Authenticated product's route
 
 -   `GET /products?page=0`
-    -   Retorna todos os produtos por página
-    -   query_parameter: page (default página 0 e 20 items por página)
+    -   Get products from page
+    -   query_parameter: page (default page 0, 20 items limit)
 -   `GET /products/{id}`
-    -   Retorna um produto por {id}
+    -   Get's a product from {id}
 -   `POST /products`
-    -   Cria um produto
+    -   Create's a product
 -   `PUT /products/{id}`
-    -   Altera um produto por {id}
+    -   Update's a product from it's {id}
 -   `DELETE /products/{id}`
-    -   Deleta um produto por {id}
+    -   Deletes a product from it's id {id}
+
+# Authentication
+
+-   To get authenticated:
+
+`POST /authenticate`
+```json
+{
+    "user": "febb0daa-75a3-40a9-856c-a556feaab436",
+    "password": "2b7d03c6-08e3-4553-b416-89ef8422c532"
+}
+```
 
 ## Collection
 
--   Coleção de rotas do insomnia rest client na pasta `collections`
+-   Collection from insomnia rest client routes on folder `collections`
 
-# Infraestrutura rodando
+        Observation: This part could be improved using swagger to expose this route and documentation, but when I did it, i didn't remember to do.
 
--   Através de docker-compose e variaveis de ambiente .env
--   Proxy reverso com nginx para chegar na aplicação
--   Rodando na url: https://backend.rpolnx.xyz
-
--   Token para testar no ambiente
-
-```json
-{
-    "user": "1414373c-8e38-4902-bb50-47fadce23772",
-    "password": "92213350-2f49-43a7-b31d-206a4d76ccb9"
-}
-```
